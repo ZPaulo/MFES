@@ -6,8 +6,8 @@ types
 	public String = seq of char;
 
 instance variables
-	public publications : set of Publication;
-	public authors : set of Author;
+	private publications : set of Publication;
+	private authors : set of Author;
 
 operations
 
@@ -23,6 +23,10 @@ operations
 		authors := authors union {elem}
 	pre elem not in set authors
 	post elem in set authors;
+	
+	public GetAuthors : () ==> set of Author
+	GetAuthors() ==
+		return authors;
 	
 	public AddPublication : Publication ==> ()
 	AddPublication(elem) ==
