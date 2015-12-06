@@ -1,0 +1,17 @@
+class Publication
+	
+
+instance variables
+
+	private title: SISP`String;
+	private date: SISP`Date;
+	private authors: set of Author;
+	private references: set of Publication;
+	private citations: set of Publication;
+	private affiliations:	map Author to SISP`String;
+
+operations
+-- TODO Define operations here
+functions
+-- TODO Define functiones here
+end Publication

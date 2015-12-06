@@ -1,0 +1,33 @@
+class SISP
+types
+	public	Date :: year : nat
+									month: nat
+									day : nat;
+	public String = seq of char;
+
+instance variables
+	public publications : set of Publication;
+	public authors : set of Author;
+
+operations
+
+	public SISP: () ==> SISP
+	SISP() ==
+	(
+		publications:={};
+		authors:={};
+	);
+
+	public AddAuthor : Author ==> ()
+	AddAuthor(elem) ==
+		authors := authors union {elem}
+	pre elem not in set authors
+	post elem in set authors;
+	
+	public AddPublication : Publication ==> ()
+	AddPublication(elem) ==
+		publications := publications union {elem}
+	pre elem not in set publications
+	post elem in set publications;
+
+end SISP

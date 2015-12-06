@@ -1,0 +1,20 @@
+class Author
+types
+
+instance variables
+	private publications: set of Publication;
+	private name:SISP`String;
+	private interests: set of SISP`String;
+	--private affiliations:map SISP`Date to SISP`String;
+	
+operations
+	public Author: SISP`String ==> Author
+		Author(str) ==
+		(
+			publications:={};
+			interests:={};
+			name:=str;
+		);
+functions
+-- TODO Define functiones here
+end Author
