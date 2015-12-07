@@ -1,17 +1,66 @@
 class Publication
-	
-
+types
+	public String = SISP`String;
+	public Date = SISP`Date;
 instance variables
 
-	private title: SISP`String;
-	private date: SISP`Date;
+	private title: String;
+	private release_date: Date;
 	private authors: set of Author;
 	private references: set of Publication;
 	private citations: set of Publication;
-	private affiliations:	map Author to SISP`String;
+	private affiliations:	map Author to String;
 
 operations
--- TODO Define operations here
-functions
--- TODO Define functiones here
+	public Publication: String * Date * set of Author * set of Publication *  set of Publication * map Author to String  ==> Publication
+		Publication(t,d,a,r,c,af) ==
+		(
+			title:=t;
+			release_date := d;
+			authors:= a;
+			references:=r;
+			citations:=c;
+			affiliations:=af;
+		); --TODO definir condiciçoes d criaçao de publicaçao
+
+	
+	public pure getAuthors : () ==> set of Author
+		getAuthors() ==
+			return authors;
+	
+	public addAuthor : Author ==> ()
+		addAuthor(a) ==
+			authors := authors union {a}
+		pre a not in set authors
+		post a in set authors;
+
+	public pure getReferences : () ==> set of Publication
+		getReferences() ==
+			return references;
+	
+	public addReference : Publication ==> ()
+		addReference(p) ==
+			references := references union {p}
+		pre p not in set references
+		post p in set references;		
+	
+	public pure getCitations : () ==> set of Publication
+		getCitations() ==
+			return citations;
+	
+	public addCitation : Publication ==> ()
+		addCitation(p) ==
+			citations := citations union {p}
+		pre p not in set citations
+		post p in set citations;
+		
+	--TODO
+	public pure getSelfCitationNumber : Author ==> int
+		getSelfCitationNumber(a) ==
+			return 0;
+			
+	--TODO
+	public pure getSelfCitationNumber : () ==> int
+		getSelfCitationNumber() ==
+			return 0;
 end Publication

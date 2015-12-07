@@ -4,6 +4,8 @@ types
 									month: nat
 									day : nat;
 	public String = seq of char;
+	
+	public Path = seq of Author;
 
 instance variables
 	private publications : set of Publication;
@@ -12,26 +14,32 @@ instance variables
 operations
 
 	public SISP: () ==> SISP
-	SISP() ==
-	(
-		publications:={};
-		authors:={};
-	);
+		SISP() ==
+		(
+			publications:={};
+			authors:={};
+		);
 
-	public AddAuthor : Author ==> ()
-	AddAuthor(elem) ==
-		authors := authors union {elem}
-	pre elem not in set authors
-	post elem in set authors;
+	public addAuthor : Author ==> ()
+		addAuthor(elem) ==
+			authors := authors union {elem}
+		pre elem not in set authors
+		post elem in set authors;
 	
-	public GetAuthors : () ==> set of Author
-	GetAuthors() ==
-		return authors;
+	public pure getAuthors : () ==> set of Author
+		getAuthors() ==
+			return authors;
 	
-	public AddPublication : Publication ==> ()
-	AddPublication(elem) ==
-		publications := publications union {elem}
-	pre elem not in set publications
-	post elem in set publications;
+	public addPublication : Publication ==> ()
+		addPublication(elem) ==
+			publications := publications union {elem}
+		pre elem not in set publications
+		post elem in set publications;
 
+	--TODO
+	public pure getCoAuthorGraph : Author * Author ==> Path
+		getCoAuthorGraph (a1,a2) == 
+			return [];
+
+	
 end SISP

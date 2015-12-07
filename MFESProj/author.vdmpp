@@ -1,20 +1,53 @@
 class Author
 types
-
+	public String = SISP`String;
 instance variables
 	private publications: set of Publication;
-	private name:SISP`String;
-	private interests: set of SISP`String;
-	--private affiliations:map SISP`Date to SISP`String;
+	private name:String;
+	private interests: set of String;
 	
 operations
-	public Author: SISP`String ==> Author
+	public Author: String ==> Author
 		Author(str) ==
 		(
 			publications:={};
 			interests:={};
 			name:=str;
 		);
-functions
--- TODO Define functiones here
+		
+	public pure getName: () ==> String
+		getName() ==
+		(
+			return name
+		);
+		
+	public pure getPublications: () ==> set of Publication
+		getPublications() ==
+		(
+			return publications
+		);	
+		
+	public addPublication: Publication ==> ()
+		addPublication(pub) ==
+		(
+			publications := publications union {pub}
+		)
+		pre self in set pub.getAuthors() and pub not in set publications
+		post pub in set publications;
+
+
+	public pure getInterests: () ==> set of String
+		getInterests() ==
+		(
+			return interests
+		);	
+		
+	public addInterest: String ==> ()
+		addInterest(interest) ==
+		(
+			interests:=interests union {interest}
+		)
+		pre interest not in set interests
+		post interest in set interests;
+		
 end Author

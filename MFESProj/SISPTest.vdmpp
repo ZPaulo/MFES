@@ -14,10 +14,10 @@ operations
 	private testAddAuthor: () ==> ()
   testAddAuthor() ==
   (
-  	sisp.AddAuthor(a1);
-  	assertTrue(a1 in set sisp.GetAuthors());
-  	sisp.AddAuthor(a2);
-  	assertTrue(a2 in set sisp.GetAuthors());
+  	sisp.addAuthor(a1);
+  	assertTrue(a1 in set sisp.getAuthors());
+  	sisp.addAuthor(a2);
+  	assertTrue(a2 in set sisp.getAuthors());
   );
   
 	public static main: () ==> ()
