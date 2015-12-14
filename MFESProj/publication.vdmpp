@@ -6,19 +6,17 @@ instance variables
 	private title: String;
 	private release_date: SISP`Date;
 	private authors: set of Author;
-	private references: set of Publication; --publications refered by this publication
 	private citations: set of Publication; --publications this publication citates
 	private citated: set of Publication; --publications that citate this publication
 	private affiliations:	map Author to String;
 
 operations
-	public Publication: String * SISP`Date * set of Author * set of Publication *  set of Publication * map Author to String==> Publication
-		Publication(name,date,aut,ref,cits,aff) ==
+	public Publication: String * SISP`Date * set of Author * set of Publication * map Author to String==> Publication
+		Publication(name,date,aut,cits,aff) ==
 		(
 			title:=name;
 			release_date := date;
 			authors:= aut;
-			references:=ref;
 			citations:=cits;
 			citated:={};
 			affiliations:=aff;
@@ -31,8 +29,7 @@ operations
 				a.addPublication(self);
 			);
 		)
-		pre (dom aff = aut) and (forall a in set (references union citations)  & (date.year > a.getDate().year) or (date.year = a.getDate().year and date.month > a.getDate().month) or  (date.year = a.getDate().year and date.month = a.getDate().month and date.day > a.getDate().day)) ; --TODO definir condiciçoes d criaçao de publicaçao for all citations as c, date < c.date
-
+		pre (dom aff = aut) and (forall a in set cits  & (date.year > a.getDate().year) or (date.year = a.getDate().year and date.month > a.getDate().month) or  (date.year = a.getDate().year and date.month = a.getDate().month and date.day > a.getDate().day));
 	
 	public pure getDate: () ==> SISP`Date
 		getDate() ==
@@ -40,27 +37,11 @@ operations
 	
 	public pure getAuthors : () ==> set of Author
 		getAuthors() ==
-			return authors;
-
-	public pure getReferences : () ==> set of Publication
-		getReferences() ==
-			return references;
-	
-	public addReference : Publication ==> ()
-		addReference(p) ==
-			references := references union {p}
-		pre p not in set references
-		post p in set references;		
+			return authors;		
 	
 	public pure getCitations : () ==> set of Publication
 		getCitations() ==
 			return citations;
-	
-	public addCitation : Publication ==> ()
-		addCitation(p) ==
-			citations := citations union {p}
-		pre p not in set citations
-		post p in set citations;
 		
 	public pure getCitated : () ==> set of Publication
 		getCitated() ==

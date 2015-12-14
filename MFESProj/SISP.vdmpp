@@ -8,7 +8,6 @@ types
 	public Path = seq of Author;
 
 instance variables
-	private publications : set of Publication;
 	private authors : set of Author;
 
 operations
@@ -16,7 +15,6 @@ operations
 	public SISP: () ==> SISP
 		SISP() ==
 		(
-			publications:={};
 			authors:={};
 		);
 
@@ -26,23 +24,6 @@ operations
 		pre elem not in set authors
 		post elem in set authors;
 	
-	public pure getAuthors : () ==> set of Author
-		getAuthors() ==
-			return authors;
-	
-	public addPublication : Publication ==> ()
-		addPublication(elem) ==
-			publications := publications union {elem}
-		pre elem not in set publications
-		post elem in set publications;
-
-	public pure conected : seq of Author ==> bool
-	conected(a) == 
-		if(len a = 1 )
-		then return true
-		else return conected(tl a) and ((hd a).getPublications() inter (hd tl a).getPublications() <> {});
-
-
 	public pure getCoAuthorPath : Author * Author ==> Path
 		getCoAuthorPath (source,target) == 
 			(
@@ -59,8 +40,8 @@ operations
 				while len Q <> 0 do
 				(
 					dcl u:Author;
-					u:=lowestDistance(Q,dist);
-					if u = target
+					u:= hd Q;--Distance between co authors is always 1 so there is no point is seeking a minimum
+					if u = target and prev(u) <> nil
 					then
 					(
 						dcl path:Path :=[];
@@ -102,18 +83,11 @@ operations
 			return nk
 			);
 			
-	pure lowestDistance: (seq of Author) * (map Author to int) ==> Author
-		lowestDistance(Q,dist) ==
+	pure public getErdosNumber : Author * Author ==> int
+		getErdosNumber (s,t) ==
 		(
-			dcl min:Author;
-			min := hd Q;
-			for all a in set elems Q do
-			(
-				if dist(a) < dist(min)
-				then min:=a
-			);
-			return min;
-		);
+			return len getCoAuthorPath(s,t);
+		)
 			
 functions
 
