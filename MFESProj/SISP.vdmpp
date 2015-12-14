@@ -1,35 +1,40 @@
 class SISP
 types
-	public	Date :: year : nat
-									month: nat
-									day : nat;
 	public String = seq of char;
 	
 	public Path = seq of Author;
 
 instance variables
-	private authors : set of Author;
+	private authors : set of Author; --authors that belong to the System for Indexing Scientific Papers
 
 operations
-
+	
+	--creates a new System for Indexing Scientific Papers
 	public SISP: () ==> SISP
 		SISP() ==
 		(
 			authors:={};
 		);
 
+	--adds an author to the System for Indexing Scientific Papers
 	public addAuthor : Author ==> ()
 		addAuthor(elem) ==
 			authors := authors union {elem}
 		pre elem not in set authors
 		post elem in set authors;
 	
+	--creates the shortest path between to different authors using their co-Authed with other authors and other authors publications as links using Dijkstra's algorithm
+	--the result is represented a sequence of authors that co-authed publications
+	--returns an empty path if there is no link
+	--source : Author : start of the path
+	--target : Author : end of the path
 	public pure getCoAuthorPath : Author * Author ==> Path
 		getCoAuthorPath (source,target) == 
 			(
 				dcl Q:seq of Author := [];
 				dcl dist:map Author to int := { |-> };
 				dcl prev:map Author to [Author] := { |-> };
+				
 				for all a in set authors do
 				(
 					dist := dist ++ {a |-> card authors};
@@ -37,6 +42,7 @@ operations
 					Q:=Q ^ [a];
 				);
 				dist(source):=0;
+				
 				while len Q <> 0 do
 				(
 					dcl u:Author;
@@ -72,8 +78,12 @@ operations
 				);
 				return []
 			)
-		pre source <> target;
-		
+		pre source <> target
+		post forall i in set inds RESULT & RESULT(i) <> hd RESULT => RESULT(i).coAuthed(RESULT(i-1)); --checks that all of the authors in the path co-authed the next and previous element
+
+	--Returns a seq of authors equal to the one given without the specified author (used by the getCoAuthorPath for Dijkstra's algorithm)
+	--k : seq of Author : set of Authors from where to remove (not changed by the operation, it's used to create a new seq)
+	--z : Author : author to be removed
 	pure remove : (seq of Author) * Author ==> seq of Author
 		remove (k,z) ==
 			(dcl nk : seq of Author := [];
@@ -83,13 +93,14 @@ operations
 			return nk
 			);
 			
+	--Returns the distance of two Authors if using as links the publications they co-authed with each other and other Authors to create a path
+	--uses the getCoAuthorPath (source,target) operation
+	--source : Author : start of the path
+	--target : Author : end of the path
 	pure public getErdosNumber : Author * Author ==> int
 		getErdosNumber (s,t) ==
 		(
 			return len getCoAuthorPath(s,t);
 		)
-			
-functions
-
 	
 end SISP

@@ -15,7 +15,7 @@ operations
 			
 		)
 	;
-	
+	--tests if publications are added to the author's publications set when they are created
 	private testAddPublication: () ==> ()
 		testAddPublication() ==
 		(
@@ -26,13 +26,14 @@ operations
 			
 			assertEqual({},a1.getPublications());
 			
-			p1 := new Publication("p1", mk_SISP`Date(1,2,3), {a1}, {}, {a1 |-> "FEUP"});
+			p1 := new Publication("p1", mk_Publication`Date(1,2,3), {a1}, {}, {a1 |-> "FEUP"});
 			assertEqual({p1},a1.getPublications());
 			
-			p2 := new Publication("p2", mk_SISP`Date(1,2,4), {a1}, {p1}, {a1 |-> "ISEP"});
+			p2 := new Publication("p2", mk_Publication`Date(1,2,4), {a1}, {p1}, {a1 |-> "ISEP"});
 			assertEqual({p1,p2},a1.getPublications());
 		);
-		
+	
+	--tests if interests are added to an author's interests set
 	private testAddInterest: () ==> ()
 		testAddInterest() ==
 		(
@@ -48,6 +49,7 @@ operations
 			assertEqual({"Tecnologia","Pesca"},a1.getInterests());
 		);	
 			
+	--tests if the number of self citations and other citations is correctly calculated
 	private testCitations: () ==> ()
 		testCitations() ==
 		(
@@ -60,21 +62,21 @@ operations
 			assertEqual(0,a1.getSelfCit());
 			assertEqual(0,a1.getCitatedOther());
 			
-			p1 := new Publication("p1", mk_SISP`Date(1,2,3), {a1}, {}, {a1 |-> "FEUP"});
-			p2 := new Publication("p1", mk_SISP`Date(1,2,4), {a2}, {p1}, {a2 |-> "FEUP"});
+			p1 := new Publication("p1", mk_Publication`Date(1,2,3), {a1}, {}, {a1 |-> "FEUP"});
+			p2 := new Publication("p1", mk_Publication`Date(1,2,4), {a2}, {p1}, {a2 |-> "FEUP"});
 			
 			
 			assertEqual(0,a1.getSelfCit());
 			assertEqual(1,a1.getCitatedOther());
 			
 			
-			p3 := new Publication("p3", mk_SISP`Date(1,2,4), {a1}, {p1}, {a1 |-> "FEUP"});
+			p3 := new Publication("p3", mk_Publication`Date(1,2,4), {a1}, {p1}, {a1 |-> "FEUP"});
 			
 			assertEqual(1,a1.getSelfCit());
 			assertEqual(1,a1.getCitatedOther());
 		);
   
-  
+  	--tests if the co-author path is correctly generated and the erdos number correctly calculated
   	private testPath: () ==> ()
 		testPath() ==
 		(
@@ -93,26 +95,37 @@ operations
 			assertEqual([],sisp.getCoAuthorPath(a1,a2));
 			assertEqual(0,sisp.getErdosNumber(a1,a2));
 			
-			p1 := new Publication("p1", mk_SISP`Date(1,2,3), {a1,a2}, {}, {a1 |-> "FEUP", a2 |-> "ISEP"});
+			p1 := new Publication("p1", mk_Publication`Date(1,2,3), {a1,a2}, {}, {a1 |-> "FEUP", a2 |-> "ISEP"});
 			
 			assertEqual([a1,a2],sisp.getCoAuthorPath(a1,a2));
 			assertEqual(2,sisp.getErdosNumber(a1,a2));
 	
-			p2 := new Publication("p2", mk_SISP`Date(1,2,4), {a2,a3}, {}, {a2 |-> "FEUP",a3 |-> "ISEP"});
+			p2 := new Publication("p2", mk_Publication`Date(1,2,4), {a2,a3}, {}, {a2 |-> "FEUP",a3 |-> "ISEP"});
 			
 			assertEqual([a1,a2,a3],sisp.getCoAuthorPath(a1,a3));
 			assertEqual(3,sisp.getErdosNumber(a1,a3));
 			
-			p3 := new Publication("p3", mk_SISP`Date(1,2,4), {a1,a3}, {}, {a1 |-> "FEUP", a3 |-> "ISEP"});
+			p3 := new Publication("p3", mk_Publication`Date(1,2,4), {a1,a3}, {}, {a1 |-> "FEUP", a3 |-> "ISEP"});
 			
 			assertEqual([a1,a3],sisp.getCoAuthorPath(a1,a3));
 			assertEqual(2,sisp.getErdosNumber(a1,a3));
 			
 		);
-  
+		
+ 	--Tests if dates check correctly and is impossible for a publication to have a reference to a younger publication
+ 	--breaks pre-condition
+	private testDate: () ==> ()
+	testDate() ==
+	(
+		dcl a1 : Author := new Author("a1");
+		dcl p1 : Publication;
+		dcl p2 : Publication;
+		
+		p1 := new Publication("p1", mk_Publication`Date(1,2,3), {a1}, {}, {a1 |-> "FEUP"});
+		p2 := new Publication("p2", mk_Publication`Date(0,2,1), {a1}, {p1}, {a1 |-> "FEUP"});
+	);
 
-
-
+	--calls all of the tests
 	public static main: () ==> ()
 	main() ==
   (
@@ -120,6 +133,7 @@ operations
 		new SISPTest().testAddInterest();
 		new SISPTest().testCitations();
 		new SISPTest().testPath();
+		--new SISPTest().testDate();
   );
 	
 end SISPTest

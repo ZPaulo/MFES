@@ -2,11 +2,15 @@ class Author
 types
 	public String = SISP`String;
 instance variables
-	private publications: set of Publication;
-	private name:String;
-	private interests: set of String;
+	private publications: set of Publication; --publications that this author was a part of
+	private name:String; --this authors name
+	private interests: set of String; --set of this author's interests
 	
+--	inv forall p in set publications & (forall a in set p.getAuthors() & p in set a.getPublications()); intra-object invariant not properly supported by VDM++
+
 operations
+--creates an author with the desired name
+--str : String : name of the author
 	public Author: String ==> Author
 		Author(str) ==
 		(
@@ -15,12 +19,16 @@ operations
 			name:=str;
 		);
 		
+
+--returns all of this authors publications as a set
 	public pure getPublications: () ==> set of Publication
 		getPublications() ==
 		(
 			return publications
 		);	
 		
+--ads a publication to the set of publications published by this author
+--pub : Publication : publication to be added to this author publications set
 	public addPublication: Publication ==> ()
 		addPublication(pub) ==
 		(
@@ -29,13 +37,15 @@ operations
 		pre self in set pub.getAuthors() and pub not in set publications
 		post pub in set publications;
 
-
+--returns a set containing this authors interests
 	public pure getInterests: () ==> set of String
 		getInterests() ==
 		(
 			return interests
 		);	
-		
+
+--ads an interest to this author's set of interests
+--interest : String : interest to be added to this author interests set
 	public addInterest: String ==> ()
 		addInterest(interest) ==
 		(
@@ -44,6 +54,7 @@ operations
 		pre interest not in set interests
 		post interest in set interests;
 		
+--returns the number of times this author citates his publications in other publications
 	public pure getSelfCit: () ==> int
 		getSelfCit() ==
 		(
@@ -61,6 +72,7 @@ operations
 			return n;
 		);
 		
+--returns the number of times this author citates publications that he did not co-authed in other publications
 	public pure getCitatedOther:() ==> int
 		getCitatedOther() ==
 		(
@@ -72,6 +84,8 @@ operations
 			return n;
 		);
 		
+--returns true if self co-authed a publication with the other author
+--a : Author : author to be checked if there is a co-authed publication with self
 	public pure coAuthed:Author ==> bool
 		coAuthed(a)==
 		(
