@@ -50,4 +50,31 @@ operations
 		pre interest not in set interests
 		post interest in set interests;
 		
+	public pure getSelfCit: () ==> int
+		getSelfCit() ==
+		(
+			dcl n:int;
+			n:=0;
+			for all p in set publications do 
+			(
+				for all c in set p.getCitations() do
+				(
+					if self in set c.getAuthors()
+					then
+						n := n + 1;
+				);
+			);
+			return n;
+		);
+		
+	public pure getCitatedOther:() ==> int
+		getCitatedOther() ==
+		(
+			dcl n:int;
+			n:=0;
+			for all p in set publications do
+				n:= n + card p.getCitated();
+			n:=n-getSelfCit();
+			return n;
+		);
 end Author

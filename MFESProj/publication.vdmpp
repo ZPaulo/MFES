@@ -7,29 +7,35 @@ instance variables
 	private title: String;
 	private release_date: Date;
 	private authors: set of Author;
-	private references: set of Publication;
-	private citations: set of Publication;
+	private references: set of Publication; --publications refered by this publication
+	private citations: set of Publication; --publications this publication citates
+	private citated: set of Publication; --publications that citate this publication
 	private affiliations:	map Author to String;
 
 operations
 	public Publication: String * Date * set of Author * set of Publication *  set of Publication * map Author to String  ==> Publication
-		Publication(t,d,a,r,c,af) ==
+		Publication(name,date,aut,ref,cits,aff) ==
 		(
-			title:=t;
-			release_date := d;
-			authors:= a;
-			references:=r;
-			citations:=c;
-			affiliations:=af;
-		); --TODO definir condiciçoes d criaçao de publicaçao
+			title:=name;
+			release_date := date;
+			authors:= aut;
+			references:=ref;
+			citations:=cits;
+			citated:={};
+			affiliations:=aff;
+			for all c in set citations do
+			(
+				c.addCitated(self);
+			);
+		); --TODO definir condiciçoes d criaçao de publicaçao for all citations as c, date < c.date
 
 	
 	public pure getAuthors : () ==> set of Author
 		getAuthors() ==
 			return authors;
 	
-	public addAuthor : Author ==> ()
-		addAuthor(a) ==
+	public addAuthors : Author ==> ()
+		addAuthors(a) ==
 			authors := authors union {a}
 		pre a not in set authors
 		post a in set authors;
@@ -54,13 +60,15 @@ operations
 		pre p not in set citations
 		post p in set citations;
 		
-	--TODO
-	public pure getSelfCitationNumber : Author ==> int
-		getSelfCitationNumber(a) ==
-			return 0;
+	public pure getCitated : () ==> set of Publication
+		getCitated() ==
+			return citated;
 			
-	--TODO
-	public pure getSelfCitationNumber : () ==> int
-		getSelfCitationNumber() ==
-			return 0;
+	public addCitated : Publication ==> ()
+		addCitated(p) ==
+			citated := citated union {p}
+		pre p not in set citated
+		post p in set citated;
+	
+		
 end Publication

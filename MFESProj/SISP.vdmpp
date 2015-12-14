@@ -36,10 +36,30 @@ operations
 		pre elem not in set publications
 		post elem in set publications;
 
-	--TODO
-	public pure getCoAuthorGraph : Author * Author ==> Path
-		getCoAuthorGraph (a1,a2) == 
-			return [];
+	public pure conected : seq of Author ==> bool
+	conected(a) == 
+		if(len a = 1 )
+		then return true
+		else return conected(tl a) and ((hd a).getPublications() inter (hd tl a).getPublications() <> {});
+
+	--TODO forall 
+	public pure getCoAuthorPath : Author * Author ==> Path
+		getCoAuthorPath (a1,a2) == 
+			(
+				dcl path:Path;
+				dcl Q:set of Author;
+				dcl dist:map Author to int;
+				dcl prev:map Author to int;
+				for all a in set authors do
+				(
+					dist := dist ++ {a |-> card authors};
+					prev := prev ++ {a |-> null};
+					Q:=Q union {a};
+				);
+				return []
+			)
+		pre a1 <> a2;
+			
 
 	
 end SISP
