@@ -42,24 +42,80 @@ operations
 		then return true
 		else return conected(tl a) and ((hd a).getPublications() inter (hd tl a).getPublications() <> {});
 
-	--TODO forall 
+
 	public pure getCoAuthorPath : Author * Author ==> Path
-		getCoAuthorPath (a1,a2) == 
+		getCoAuthorPath (source,target) == 
 			(
-				dcl path:Path;
-				dcl Q:set of Author;
-				dcl dist:map Author to int;
-				dcl prev:map Author to int;
+				dcl Q:seq of Author := [];
+				dcl dist:map Author to int := { |-> };
+				dcl prev:map Author to [Author] := { |-> };
 				for all a in set authors do
 				(
 					dist := dist ++ {a |-> card authors};
-					prev := prev ++ {a |-> null};
-					Q:=Q union {a};
+					prev := prev ++ {a |-> nil};
+					Q:=Q ^ [a];
+				);
+				dist(source):=0;
+				while len Q <> 0 do
+				(
+					dcl u:Author;
+					u:=lowestDistance(Q,dist);
+					if u = target
+					then
+					(
+						dcl path:Path :=[];
+						while prev(u) <> nil do
+						(
+							path:=[u]^path;
+							u:=prev(u);
+						);
+						path:=[u]^path;
+						return path;
+					);
+					Q:=remove(Q,u);
+					for all v in set authors do
+					(
+						if u.coAuthed(v)
+						then
+						(
+							dcl alt:int;
+							alt:=dist(u)+1;
+							if alt < dist(v)
+							then
+							(
+								dist(v) := alt;
+								prev(v) := u;
+							);
+						);
+					);
 				);
 				return []
 			)
-		pre a1 <> a2;
+		pre source <> target;
+		
+	pure remove : (seq of Author) * Author ==> seq of Author
+		remove (k,z) ==
+			(dcl nk : seq of Author := [];
+			for elem in k do
+				if elem <> z
+				then nk := nk^[elem];
+			return nk
+			);
 			
+	pure lowestDistance: (seq of Author) * (map Author to int) ==> Author
+		lowestDistance(Q,dist) ==
+		(
+			dcl min:Author;
+			min := hd Q;
+			for all a in set elems Q do
+			(
+				if dist(a) < dist(min)
+				then min:=a
+			);
+			return min;
+		);
+			
+functions
 
 	
 end SISP

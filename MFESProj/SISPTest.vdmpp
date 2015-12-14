@@ -4,8 +4,25 @@ instance variables
 	sisp : 	SISP := new SISP();
 	a1 : Author := new Author("a1");
 	a2 : Author := new Author("a2");
+	a3 : Author := new Author("a3");
+	p1 : Publication := new Publication("p1", mk_SISP`Date(1,2,3), {a1,a2}, {}, {});
+	p3 : Publication := new Publication("p3", mk_SISP`Date(1,2,3), {a1,a3}, {}, {});
+	p2 : Publication := new Publication("p2", mk_SISP`Date(1,2,3), {a2,a3}, {}, {});
 
 operations
+
+	protected assertEqual: ? * ? ==> ()
+	assertEqual(expected, actual) == 
+		if expected <> actual then (
+			 	IO`print("Actual value (");
+  			IO`print(actual); 
+  			IO`print(") different from expected (");
+  			IO`print(expected);
+  			IO`println(")\n")
+			
+		)
+	;
+	
 
 	private assertTrue: bool ==> ()
   assertTrue(cond) == return
@@ -15,15 +32,33 @@ operations
   testAddAuthor() ==
   (
   	sisp.addAuthor(a1);
-  	assertTrue(a1 in set sisp.getAuthors());
   	sisp.addAuthor(a2);
-  	assertTrue(a2 in set sisp.getAuthors());
+  	assertEqual(sisp.getAuthors(),{a2});
   );
+
+	private testPath: () ==> ()
+  testPath() ==
+  (
+  	sisp.addAuthor(a1);
+  	sisp.addAuthor(a2);
+  	sisp.addAuthor(a3);
+  	assertEqual([a1,a3],sisp.getCoAuthorPath(a1,a3));
+  );  
   
+		private testCo: () ==> ()
+ 		 testCo() ==
+  	(
+  		sisp.addAuthor(a1);
+  		sisp.addAuthor(a2);
+  		assertTrue(a1.coAuthed(a2));
+  	);  
+  
+
+
 	public static main: () ==> ()
 	main() ==
   (
-		new SISPTest().testAddAuthor();
+		new SISPTest().testPath();
   );
 	
 end SISPTest

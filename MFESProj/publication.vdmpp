@@ -1,20 +1,19 @@
 class Publication
 types
 	public String = SISP`String;
-	public Date = SISP`Date;
 instance variables
 
 	private title: String;
-	private release_date: Date;
+	private release_date: SISP`Date;
 	private authors: set of Author;
 	private references: set of Publication; --publications refered by this publication
 	private citations: set of Publication; --publications this publication citates
 	private citated: set of Publication; --publications that citate this publication
-	private affiliations:	map Author to String;
+--TODO fazer os maps de strings p afiliaçoes
 
 operations
-	public Publication: String * Date * set of Author * set of Publication *  set of Publication * map Author to String  ==> Publication
-		Publication(name,date,aut,ref,cits,aff) ==
+	public Publication: String * SISP`Date * set of Author * set of Publication *  set of Publication==> Publication
+		Publication(name,date,aut,ref,cits) ==
 		(
 			title:=name;
 			release_date := date;
@@ -22,10 +21,13 @@ operations
 			references:=ref;
 			citations:=cits;
 			citated:={};
-			affiliations:=aff;
 			for all c in set citations do
 			(
 				c.addCitated(self);
+			);
+			for all a in set authors do
+			(
+				a.addPublication(self);
 			);
 		); --TODO definir condiciçoes d criaçao de publicaçao for all citations as c, date < c.date
 

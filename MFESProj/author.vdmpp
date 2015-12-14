@@ -77,4 +77,15 @@ operations
 			n:=n-getSelfCit();
 			return n;
 		);
+		
+	public pure coAuthed:Author ==> bool
+		coAuthed(a)==
+		(
+			for all p in set publications do
+			(
+				if a in set p.getAuthors()
+				then return true
+			);
+			return false;
+		);
 end Author
