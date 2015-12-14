@@ -16,11 +16,6 @@ operations
 		)
 	;
 	
-
-	private assertTrue: bool ==> ()
-  assertTrue(cond) == return
-		pre cond;
-
 	private testAddPublication: () ==> ()
 		testAddPublication() ==
 		(

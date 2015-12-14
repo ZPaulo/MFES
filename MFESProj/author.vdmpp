@@ -15,12 +15,6 @@ operations
 			name:=str;
 		);
 		
-	public pure getName: () ==> String
-		getName() ==
-		(
-			return name
-		);
-		
 	public pure getPublications: () ==> set of Publication
 		getPublications() ==
 		(
